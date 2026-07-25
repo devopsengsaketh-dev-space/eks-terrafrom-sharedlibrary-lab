@@ -73,16 +73,6 @@ pipeline {
             }
         }
 
-        stage('Approval') {
-
-    steps {
-
-        input message: 'Approve Terraform Apply?'
-
-    }
-
-}
-
     }
 
 }
