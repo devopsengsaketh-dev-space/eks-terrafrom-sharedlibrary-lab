@@ -49,7 +49,7 @@ pipeline {
                     if(params.ACTION == 'PLAN') {
 
 
-                        terraformPlan()
+                        terraformplan()
 
 
                     }
@@ -58,7 +58,7 @@ pipeline {
                     if(params.ACTION == 'APPLY') {
 
 
-                        terraformApply(
+                        terraformapply(
                             params.PLAN_BUILD_NUMBER
                         )
 
