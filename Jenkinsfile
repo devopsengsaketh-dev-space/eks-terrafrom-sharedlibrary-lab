@@ -3,9 +3,13 @@ pipeline {
     agent any
 
 
-    environment {
+    parameters {
 
-        AWS_REGION = "ap-south-1"
+        string(
+            name: 'PLAN_BUILD_NUMBER',
+            defaultValue: '',
+            description: 'Terraform plan build number'
+        )
 
     }
 
@@ -20,10 +24,26 @@ pipeline {
                 git(
                     branch: 'main',
                     credentialsId: 'github-token',
-                    url: 'https://github.com/devopsengsaketh-dev-space/eks-terrafrom-sharedlibrary-lab.git'
+                    url: 'https://github.com/devopsengsaketh-dev-space/eks-terraform-lab.git'
                 )
 
             }
+
+        }
+
+
+        stage('Download Terraform Plan') {
+
+            steps {
+
+                copyArtifacts(
+                    projectName: 'terraform-plan-job',
+                    selector: specific("${PLAN_BUILD_NUMBER}"),
+                    filter: 'tfplan'
+                )
+
+            }
+
         }
 
 
@@ -36,42 +56,22 @@ pipeline {
                 '''
 
             }
+
         }
 
 
-        stage('Terraform Validate') {
+        stage('Terraform Apply') {
 
             steps {
 
                 sh '''
-                terraform validate
+                terraform apply tfplan
                 '''
 
             }
+
         }
 
-
-        stage('Terraform Plan') {
-
-            steps {
-
-                sh '''
-                terraform plan -out=tfplan
-                '''
-
-            }
-        }
-
-
-        stage('Archive Plan') {
-
-            steps {
-
-                archiveArtifacts artifacts: 'tfplan',
-                fingerprint: true
-
-            }
-        }
 
     }
 
