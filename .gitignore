@@ -1,0 +1,22 @@
+# Terraform working directory
+.terraform/
+
+# Terraform state
+*.tfstate
+*.tfstate.*
+
+# Terraform plan files
+*.tfplan
+
+# Crash logs
+crash.log
+
+# Vim
+*.swp
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
