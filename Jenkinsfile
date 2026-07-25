@@ -22,7 +22,7 @@ pipeline {
             steps {
 
                 copyArtifacts(
-                    projectName: 'terraform-plan-job',
+                    projectName: 'terraform-plan-pipeline',
                     selector: specific("${PLAN_BUILD_NUMBER}"),
                     filter: 'tfplan'
                 )
