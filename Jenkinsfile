@@ -17,21 +17,6 @@ pipeline {
     stages {
 
 
-        stage('Checkout') {
-
-            steps {
-
-                git(
-                    branch: 'main',
-                    credentialsId: 'github-token',
-                    url: 'https://github.com/devopsengsaketh-dev-space/eks-terraform-lab.git'
-                )
-
-            }
-
-        }
-
-
         stage('Download Terraform Plan') {
 
             steps {
@@ -71,7 +56,6 @@ pipeline {
             }
 
         }
-
 
     }
 
