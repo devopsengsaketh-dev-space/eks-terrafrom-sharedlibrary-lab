@@ -1,3 +1,6 @@
+@Library('terraform-shared-library') _
+
+
 pipeline {
 
     agent any
@@ -5,10 +8,17 @@ pipeline {
 
     parameters {
 
+        choice(
+            name: 'ACTION',
+            choices: ['PLAN','APPLY'],
+            description: 'Terraform operation'
+        )
+
+
         string(
             name: 'PLAN_BUILD_NUMBER',
             defaultValue: '',
-            description: 'Terraform plan build number'
+            description: 'Required for APPLY'
         )
 
     }
@@ -17,45 +27,51 @@ pipeline {
     stages {
 
 
-        stage('Download Terraform Plan') {
+        stage('Checkout') {
 
             steps {
 
-                copyArtifacts(
-                    projectName: 'terraform-plan-pipeline',
-                    selector: specific("${PLAN_BUILD_NUMBER}"),
-                    filter: 'tfplan'
-                )
+                checkout scm
 
             }
 
         }
 
 
-        stage('Terraform Init') {
+        stage('Terraform Operation') {
 
             steps {
 
-                sh '''
-                terraform init
-                '''
+
+                script {
+
+
+                    if(params.ACTION == 'PLAN') {
+
+
+                        terraformPlan()
+
+
+                    }
+
+
+                    if(params.ACTION == 'APPLY') {
+
+
+                        terraformApply(
+                            params.PLAN_BUILD_NUMBER
+                        )
+
+
+                    }
+
+
+                }
 
             }
 
         }
 
-
-        stage('Terraform Apply') {
-
-            steps {
-
-                sh '''
-                terraform apply tfplan
-                '''
-
-            }
-
-        }
 
     }
 
